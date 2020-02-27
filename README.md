@@ -9,6 +9,8 @@ Para a utilização da API é necessário ter a instalação do [PostgreSQL](htt
 Utilize o gerenciador de pacotes [yarn](https://yarnpkg.com/) para usar a API.
 
 ```bash
+yarn sequelize db:create // Cria o banco
+yarn sequelize db:migrate // Executa as migrations
 yarn add // Para baixar os pacotes necessários
 yarn dev // Para executar o servidor
 ```
