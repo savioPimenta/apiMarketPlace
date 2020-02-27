@@ -18,12 +18,17 @@ const DescontosController = require('./controllers/DescontosController')
 const PedidoController = require('./controllers/PedidoController')
 const UserController = require('./controllers/UsersController')
 const AddressController = require('./controllers/AddressController')
+const AuthController = require('./controllers/AuthController')
+
+const auth = require('./middlewares/auth')
 
 const routes = express.Router()
 
+//routes.use(auth)
+
 //Loja
 
-routes.get('/lojas', LojaController.index)
+routes.get('/lojas',auth, LojaController.index)
 routes.post('/lojas', LojaController.store)
 routes.delete('/lojas/:loja_id', LojaController.delete)
 routes.put('/lojas/:loja_id', LojaController.update)
@@ -140,5 +145,9 @@ routes.get('/endereco/:id', AddressController.index) // Retorna todos os endere√
 routes.post('/endereco/:id', AddressController.store)
 routes.delete('/endereco/:id', AddressController.delete)
 routes.put('/endereco/:id', AddressController.update)
+
+//Authenticate
+
+routes.post('/auth', AuthController.index)
 
 module.exports = routes

@@ -1,8 +1,6 @@
 const Users = require('../models/Users')
-const { QueryTypes } = require('sequelize');
-const sequelize = require('../database/index')
 const { Op } = require('sequelize')
-const Categorias = require('./CategoriasController')
+const bcrypt = require('bcryptjs')
 
 module.exports = {
     async index(req, res) {
@@ -11,7 +9,7 @@ module.exports = {
         return res.json({ users })
     },
     async store(req, res) {
-        const { nome, sobrenome, numero, email, senha } = req.body
+        let { nome, sobrenome, numero, email, senha } = req.body
 
         const { originalname: nameFoto, size, filename: key } = req.file
 
@@ -23,9 +21,16 @@ module.exports = {
             return res.json({ error: "Esse email já está sendo usado por outro usuário! Tente outro" })
         }
 
-        user = await Users.create({ nome, sobrenome, foto: key, numero, email, senha })
+        const hash = bcrypt.hashSync(senha, 10)
+        senha = hash
 
-        return res.json(user)
+        user = await Users.create({ nome, sobrenome, foto: key, numero, email, senha })
+        
+        const token = jwt.sign({ id: user.id }, authConfig.secret, {
+            expiresIn: 86400
+        })
+
+        return res.send({user, token})
 
     },
     async delete(req, res) {
@@ -44,7 +49,7 @@ module.exports = {
     },
     async update(req, res) {
         const { id } = req.params
-        const { nome, sobrenome, numero, email, senha } = req.body
+        let { nome, sobrenome, numero, email, senha } = req.body
 
         const { originalname: nameFoto, size, filename: key } = req.file
 
@@ -54,6 +59,11 @@ module.exports = {
                 id
             }
         })
+
+        if (senha) {
+            const hash = bcrypt.hashSync(senha, 10)
+            senha = hash
+        }
 
         if (users) {
             if (nome) { users.nome = nome }
@@ -89,10 +99,11 @@ module.exports = {
                     where: { nome: { [Op.iLike]: `%${nome}%` } }
                 })
             } else {
-                return res.status(400).json({"message": "Preencha os dados necessários"})
+                return res.status(400).json({ "message": "Preencha os dados necessários" })
             }
         }
         if (user) {
+            user.senha = undefined
             return res.json(user)
         }
         return res.json({ "Message": "nonexistent user" })

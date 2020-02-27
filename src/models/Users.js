@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require('sequelize')
+const bcrypt = require('bcryptjs')
 
 class Users extends Model {
     static init(sequelize) {
@@ -11,7 +12,7 @@ class Users extends Model {
             foto: DataTypes.STRING
         }, {
             sequelize,
-            tableName: 'users'
+            tableName: 'users',
         })
     }
 
