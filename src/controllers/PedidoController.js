@@ -15,9 +15,14 @@ module.exports = {
         const { user_id } = req.params
 
         const cesta = await Cestas.findOne({
-            user_id,
-            active: "ative"
+            where: {
+                user_id,
+                active: "ativa"
+            }
         })
+
+        if (!cesta)
+            return res.status(400).send({ error: "nonexistent actives bag on this user" })
 
         const arrayPedidos = cesta.pedido_id.split(',').map(tech => {
             tech.trim()
@@ -211,6 +216,7 @@ module.exports = {
             produto_id_escopo = obj.pedido_produto.produto_id
         });
 
+
         // Isola o id da caracteristica se não for passada
 
         caracteristicas = pedido.caracteristicas
@@ -223,11 +229,36 @@ module.exports = {
         if (!produto_id) { produto_id = produto_id_escopo }
         if (!caracteristica_id) { caracteristica_id = caracteristica_id_escopo }
 
-        const produto = await Produtos.findOne({ where: { id: produto_id } })
+        const produto = await Produtos.findOne({
+            where: { id: produto_id },
+            include: {
+                association: 'descontos',
+                attributes: ['valor']
+            }
+        })
         await pedido.setProdutos(produto)
 
         const caracteristica = await Caracteristicas.findOne({ where: { id: caracteristica_id } })
         await pedido.setCaracteristicas(caracteristica)
+
+
+        // Isola o valor do desconto
+
+        descontos = produto.descontos
+        let valor
+
+        descontos.map(function (obj) {
+            valor = obj.valor
+        });
+
+        const valor_total = produto.preco
+
+        const valor_final = valor_total * ((100 - valor) / 100)
+
+        pedido.valor_total = valor_total
+        pedido.valor_final = valor_final
+
+        await pedido.save()
 
         pedido = await Pedidos.findOne({
             where: {

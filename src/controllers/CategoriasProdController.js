@@ -24,7 +24,7 @@ module.exports = {
             }
         })
         if (categoria_prod) {
-            await categoria.destroy()
+            await categoria_prod.destroy()
             return res.json({ "Message": "successfully deleted" })
         }
         return res.json({ "Message": "nonexistent category id" })
@@ -44,7 +44,7 @@ module.exports = {
 
             await categoria_prod.save()
 
-            return res.json({ "Message": "successfully updated", categoria_prods })
+            return res.json({ "Message": "successfully updated", categoria_prod })
         }
         return res.json({ "Message": "nonexistent category id" })
     },

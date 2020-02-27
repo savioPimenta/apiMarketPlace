@@ -74,7 +74,6 @@ routes.get('/produtosLoja/:loja_id', ProdutosAdvancedController.selectByLoja)
 
 routes.get('/produtosCategoria/:produto_id', ProdutosCategoriasProdController.index)
 routes.post('/produtosCategoria/:produto_id', ProdutosCategoriasProdController.store)
-routes.post('/produtosCategorias/:produto_id', ProdutosCategoriasProdController.stores)
 routes.delete('/produtosCategoria/:produto_id', ProdutosCategoriasProdController.delete)
 routes.get('/produtosCategoria_select', ProdutosCategoriasProdController.select)
 routes.get('/produtosCategoria_select/:id', ProdutosCategoriasProdController.selectById)
@@ -97,6 +96,7 @@ routes.put('/caracteristicas/:caracteristicas_id', CaracteristicasController.upd
 
 routes.get('/produtosCaracteristicas/:produto_id', ProdutosCaracteristicasController.index)
 routes.post('/produtosCaracteristicas/:produto_id', ProdutosCaracteristicasController.store)
+routes.post('/produtosCaracteristicas/:produto_id/:caracteristica_id', ProdutosCaracteristicasController.storeById)
 routes.delete('/produtosCaracteristicas/:produto_id', ProdutosCaracteristicasController.delete)
 routes.get('/produtosCaracteristicas_select_tipo', ProdutosCaracteristicasController.selectByTipo)
 routes.get('/produtosCaracteristicas_select_valor', ProdutosCaracteristicasController.selectByValor)

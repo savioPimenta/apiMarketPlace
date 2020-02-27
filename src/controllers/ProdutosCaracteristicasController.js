@@ -40,6 +40,30 @@ module.exports = {
         return res.json(caracteristicas)
     },
 
+    // Adiciona uma categoria a um produto por id
+
+    async storeById(req, res) {
+        const { produto_id, caracteristica_id } = req.params
+
+        const produto = await Produtos.findByPk(produto_id)
+
+        const caracteristica = await Caracteristicas.findOne({
+            where: { id: caracteristica_id }
+        })
+
+        if (!produto) {
+            return res.status(400).json({ error: 'Product not found' })
+        }
+
+        if (!caracteristica) {
+            return res.status(400).json({ error: 'Characteristics not found' })
+        }
+
+        await produto.addCaracteristicas(caracteristica)
+
+        return res.json(caracteristica)
+    },
+
     // Deleta uma caracteristica de um produto
 
     async delete(req, res) {

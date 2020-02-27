@@ -25,12 +25,12 @@ module.exports = {
         senha = hash
 
         user = await Users.create({ nome, sobrenome, foto: key, numero, email, senha })
-        
+        /*
         const token = jwt.sign({ id: user.id }, authConfig.secret, {
             expiresIn: 86400
-        })
+        })*/
 
-        return res.send({user, token})
+        return res.send({user/*, token*/})
 
     },
     async delete(req, res) {
